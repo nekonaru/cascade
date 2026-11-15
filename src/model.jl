@@ -14,9 +14,6 @@ const BELIEVER    = Int8(1)
 const SKEPTIC     = Int8(2)
 const RECOVERED   = Int8(3)
 
-const STATE_NAMES = Dict(SUSCEPTIBLE => "susceptible", BELIEVER => "believer",
-                         SKEPTIC => "skeptic", RECOVERED => "recovered")
-
 struct CascadeParams
     beta::Float64              # per-neighbor forwarding probability per step
     forget_rate::Float64       # probability a Believer stops spreading per step
@@ -68,11 +65,12 @@ count_states(state::Vector{Int8}, ever_believer::Int, t::Int) = StateCounts(
 )
 
 """
-    init_simulation(adj, degree, communities, params; seed, seeds, strategy) -> Simulation
+    init_simulation(adj, degree, params; seed, seeds, record_trace=false) -> Simulation
 
-Build the initial state: `seeds` lists the 1-based seed node ids. Seed nodes start
-as BELIEVER, unless blocked by `params.block_top_k` (then RECOVERED). Skepticism is
-sampled from Beta(2, 5) and shifted by `params.literacy_boost` (clipped to [0, 0.99]).
+Build the initial state: `seeds` lists the 1-based seed node ids (see seed_nodes).
+Seed nodes start as BELIEVER, unless blocked by `params.block_top_k` (then RECOVERED).
+Skepticism is sampled from Beta(2, 5) and shifted by `params.literacy_boost`
+(clipped to [0, 0.99]).
 """
 function init_simulation(adj::Vector{Vector{Int32}}, degree::Vector{Int32},
                          params::CascadeParams; seed::Integer,
