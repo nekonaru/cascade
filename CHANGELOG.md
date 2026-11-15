@@ -12,7 +12,7 @@ First public release of Cascade.
 - **Interventions.** Late or early fact-checks with fixed reach, population-wide literacy boost, and upfront blocking of the top-k hub seeds.
 - **Monte Carlo analysis.** Replication runner with mean, standard deviation and 95% CI, plus metrics for reach, peak activity, time to peak and initial growth.
 - **Parameter sweeps.** Grid sweeps with a mean-final-reach heatmap.
-- **Visualization.** State curves, mean-with-band curves, seed and fact-check comparisons, sweep heatmaps, CSV exports, and animated GIF output.
+- **Visualization.** State curves, mean-with-band curves, seed and fact-check comparisons, sweep heatmaps, CSV and JSON exports, and animated GIF output.
 - **TOML configuration.** Full runs driven from `config/default.toml`, with scripts for single runs, Monte Carlo studies, benchmarks and animations.
 
 ## Improvements
