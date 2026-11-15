@@ -21,7 +21,7 @@ function load_config(path::AbstractString)
     elseif kind === :sbm
         sizes = Vector{Int}(get(netcfg, "sizes", [500, 500]))
         probs_raw = get(netcfg, "probs", [[0.02, 0.002], [0.002, 0.02]])
-        probs = Float64.(reduce(hcat, probs_raw))
+        probs = reduce(vcat, [permutedims(Float64.(r)) for r in probs_raw])
         NetworkSpec(:sbm, sum(sizes); sizes = sizes, probs = probs)
     else
         throw(ArgumentError("unknown network kind in config: $kind"))

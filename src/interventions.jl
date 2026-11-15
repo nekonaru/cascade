@@ -34,7 +34,7 @@ function seed_nodes(net::NetworkResult, strategy::Symbol; m::Integer, rng::Abstr
             c = net.communities[i]
             push!(get!(bycomm, c, Int[]), i)
         end
-        blocks = sort(collect(values(bycomm)); by = length, rev = true)
+        blocks = sort(collect(values(bycomm)); by = b -> (-length(b), minimum(b)))
         seeds = Int[]
         round = 0
         while length(seeds) < m

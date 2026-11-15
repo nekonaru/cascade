@@ -52,6 +52,26 @@ using StableRNGs
         @test sim.history[end].ever_believer >= maximum(h.believer for h in sim.history)
     end
 
+    @testset "parameter validation" begin
+        @test_throws ArgumentError CascadeParams(beta = -0.1)
+        @test_throws ArgumentError CascadeParams(forget_rate = -0.1)
+        @test_throws ArgumentError CascadeParams(forget_rate = 1.5)
+        @test_throws ArgumentError CascadeParams(literacy_boost = -0.1)
+        @test_throws ArgumentError CascadeParams(factcheck_time = 0)
+        @test_throws ArgumentError CascadeParams(factcheck_reach = 1.5)
+        @test_throws ArgumentError CascadeParams(factcheck_reach = -0.1)
+        @test_throws ArgumentError CascadeParams(block_top_k = -1)
+    end
+
+    @testset "duplicate seeds are rejected" begin
+        net = generate_network(spec; seed = 17)
+        params = CascadeParams(beta = 0.15)
+        @test_throws ArgumentError init_simulation(net.adj, net.degree, params; seed = 17, seeds = [1, 1, 5])
+        @test_throws ArgumentError init_simulation(net.adj, net.degree, params; seed = 17, seeds = [0])
+        @test_throws ArgumentError init_simulation(net.adj, net.degree, params; seed = 17, seeds = [net.n + 1])
+        @test_throws ArgumentError init_simulation(net.adj, net.degree, params; seed = 17, seeds = Int[])
+    end
+
     @testset "record_trace captures per-step states" begin
         sim = run_simulation(spec, CascadeParams(beta = 0.15); seed = 33, steps = 20, record_trace = true)
         @test length(sim.trace) == 21
