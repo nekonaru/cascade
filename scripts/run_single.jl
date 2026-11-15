@@ -4,7 +4,7 @@
 using Cascade
 
 spec = NetworkSpec(:barabasi_albert, 1000; k = 3)
-params = CascadeParams(beta = 0.08, forget_rate = 0.05)
+params = CascadeParams(beta = 0.15, forget_rate = 0.05)
 
 sim = run_simulation(spec, params; seed = 42, strategy = :random, m_seeds = 1, steps = 200)
 

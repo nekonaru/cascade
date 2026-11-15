@@ -38,13 +38,15 @@ jobs:
         run: julia --color=yes --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test(coverage=true)'
       - name: Check coverage
         run: |
-          julia --project=. -e '
+          julia -e '
+            using Pkg
+            Pkg.activate(; temp = true)
+            Pkg.add("Coverage")
             using Coverage
-            cov = analyze_coverage("src")
-            covered = sum(c.covered for c in cov)
-            total = sum(c.covered + c.missed for c in cov)
+            fcs = process_folder("src")
+            covered, total = get_summary(fcs)
             ratio = total > 0 ? covered / total : 0.0
-            println("covered: $covered/$total ($(round(100*ratio, digits=1))%)")
+            println("covered: $covered/$total ($(round(100 * ratio, digits=1))%)")
             ratio >= 0.5 || error("coverage below 50%")
           '
 
@@ -56,3 +58,5 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

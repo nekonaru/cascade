@@ -1,0 +1,7 @@
+title = "Cascade gitleaks config"
+
+[allowlist]
+description = "Manifest.toml is machine-generated; the UUIDs in it are package identifiers, not secrets"
+paths = [
+  '''(^|/)Manifest\.toml$''',
+]

@@ -11,7 +11,7 @@ spec = NetworkSpec(:barabasi_albert, 1000; k = 3)
 
 rows = NamedTuple[]
 for ft in (nothing, 6, 12, 24)
-    params = CascadeParams(beta = 0.08, factcheck_time = ft, factcheck_reach = 0.7)
+    params = CascadeParams(beta = 0.15, factcheck_time = ft, factcheck_reach = 0.7)
     sims = run_replications(spec, params; replications = 100, base_seed = 42, steps = 150)
     reach = mean(final_reach, sims)
     label = ft === nothing ? "none" : string(ft)

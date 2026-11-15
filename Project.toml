@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -16,6 +17,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 CairoMakie = "0.15"
+Coverage = "1"
 CSV = "1"
 DataFrames = "1"
 Distributions = "0.25"
@@ -26,7 +28,8 @@ julia = "1.10"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["BenchmarkTools", "Test"]
+test = ["BenchmarkTools", "Coverage", "Test"]

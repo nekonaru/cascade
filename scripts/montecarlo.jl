@@ -8,7 +8,7 @@ using Statistics
 
 out = length(ARGS) >= 1 ? ARGS[1] : "montecarlo-summary.csv"
 spec = NetworkSpec(:barabasi_albert, 1000; k = 3)
-params = CascadeParams(beta = 0.06)
+params = CascadeParams(beta = 0.15)
 
 rows = NamedTuple[]
 for strategy in (:random, :hub)

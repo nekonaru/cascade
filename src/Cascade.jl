@@ -1,5 +1,6 @@
 module Cascade
 
+using Random
 using Graphs
 using StableRNGs
 using Distributions
