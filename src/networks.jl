@@ -62,7 +62,7 @@ end
 function network_erdos_renyi(n::Int, p::Float64; rng::AbstractRNG)
     n >= 2 || throw(ArgumentError("n must be >= 2, got $n"))
     0.0 <= p <= 1.0 || throw(ArgumentError("p must be in [0, 1], got $p"))
-    g = erdos_renyi(n, p, rng)
+    g = erdos_renyi(n, p; rng = rng)
     adj = _adj_from_graph(g)
     return NetworkResult(adj, _degree_from_adj(adj), _communities_from_components(g), :erdos_renyi, n)
 end
@@ -80,7 +80,7 @@ end
 function network_barabasi_albert(n::Int, k::Int; rng::AbstractRNG)
     n >= 2 || throw(ArgumentError("n must be >= 2, got $n"))
     1 <= k < n || throw(ArgumentError("k must satisfy 1 <= k < n, got k=$k, n=$n"))
-    g = barabasi_albert(n, k, rng)
+    g = barabasi_albert(n, k; rng = rng)
     adj = _adj_from_graph(g)
     return NetworkResult(adj, _degree_from_adj(adj), _communities_from_components(g), :barabasi_albert, n)
 end
@@ -91,7 +91,17 @@ function network_stochastic_block_model(sizes::Vector{Int}, probs::Matrix{Float6
     B = length(sizes)
     size(probs) == (B, B) || throw(ArgumentError("probs must be $B x $B, got $(size(probs))"))
     all(0.0 .<= probs .<= 1.0) || throw(ArgumentError("probs entries must be in [0, 1]"))
-    g = stochastic_block_model(sizes, probs, rng)
+    issymmetric(probs) || throw(ArgumentError("probs must be symmetric (block-to-block connection probabilities)"))
+    # Graphs.jl's stochastic_block_model takes mean neighbor counts, not probabilities:
+    # c[a,b] = expected degree of a block-a node into block b = p[a,b] * sizes[b].
+    # The diagonal can never exceed sizes[a] - 1, so clamp it to the achievable density
+    # (a flat 1.0 would trip Graphs' own "mean degree" guard).
+    c = probs .* reshape(Float64.(sizes), 1, :)
+    for b in 1:B
+        limit = (sizes[b] - 1) * (1.0 - 1e-9)
+        c[b, b] = min(c[b, b], limit)
+    end
+    g = stochastic_block_model(c, sizes; rng = rng)
     n = nv(g)
     adj = _adj_from_graph(g)
     communities = Vector{Int32}(undef, n)
