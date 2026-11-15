@@ -9,7 +9,7 @@ k = 3                      # barabasi_albert / watts_strogatz (even k); ws_beta 
 # probs = [[0.02, 0.002], [0.002, 0.02]]
 
 [params]
-beta = 0.08                # per-neighbor forwarding probability per step
+beta = 0.15                # per-neighbor forwarding probability per step
 forget_rate = 0.05         # probability a Believer stops spreading per step
 literacy_boost = 0.0       # added to every agent's skepticism before t=0 (clipped to 0.99)
 # factcheck_time = 12      # step at which the fact-check lands (commented out = disabled)
