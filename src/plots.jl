@@ -39,15 +39,20 @@ Mean believer/reached fraction with a 95% band across replications.
 function plot_curve_interval(sims::AbstractVector{Simulation}, path::AbstractString)
     isempty(sims) && throw(ArgumentError("sims must not be empty"))
     T = maximum(length(s.history) for s in sims)
-    n = length(sims[1])
     reached = fill(Float64(NaN), T, length(sims))
     for (j, s) in enumerate(sims)
+        n_local = length(s)
         for h in s.history
-            reached[h.t + 1, j] = (n - h.susceptible) / n
+            reached[h.t + 1, j] = (n_local - h.susceptible) / n_local
         end
     end
-    mu = vec(mean(reached; dims = 2))
-    sd = vec(std(reached; dims = 2))
+    mu = Vector{Float64}(undef, T)
+    sd = Vector{Float64}(undef, T)
+    for i in 1:T
+        vals = filter(!isnan, reached[i, :])
+        mu[i] = isempty(vals) ? 0.0 : mean(vals)
+        sd[i] = length(vals) > 1 ? std(vals; corrected = true) : 0.0
+    end
     ts = 0:(T - 1)
     fig = Figure(; size = (900, 500))
     ax = Axis(fig[1, 1]; xlabel = "time step", ylabel = "fraction reached",
@@ -106,11 +111,13 @@ Heatmap of mean final_reach for a two-parameter sweep (see sweep2).
 function plot_sweep_heatmap(df::DataFrame, xname::Symbol, yname::Symbol, path::AbstractString)
     xs = sort!(unique(df[!, xname]))
     ys = sort!(unique(df[!, yname]))
-    Z = fill(Float64(NaN), length(ys), length(xs))
+    # Makie's heatmap(x, y, matrix) expects length(x) == size(matrix, 1):
+    # rows are x, columns are y.
+    Z = fill(Float64(NaN), length(xs), length(ys))
     for row in eachrow(df)
         ix = searchsortedfirst(xs, row[xname])
         iy = searchsortedfirst(ys, row[yname])
-        Z[iy, ix] = row.final_reach
+        Z[ix, iy] = row.final_reach
     end
     fig = Figure(; size = (800, 600))
     ax = Axis(fig[1, 1]; xlabel = String(xname), ylabel = String(yname),

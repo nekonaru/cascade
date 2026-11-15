@@ -1,6 +1,7 @@
 using Test
 using Cascade
 using Statistics
+using StableRNGs
 
 const NET = NetworkSpec(:barabasi_albert, 200; k = 3)
 const REPS = 12
@@ -80,6 +81,43 @@ const REPS = 12
         df = sweep(configs, NET; replications = 2, base_seed = 8000, steps = 40)
         @test nrow(df) == 2
         @test hasproperty(df, :final_reach)
+        @test eltype(df.final_reach) == Float64
+        @test all(isfinite, df.final_reach)
+    end
+
+    @testset "mechanism: full reach fact-check zeroes current believers exactly at that step" begin
+        spec = NetworkSpec(:barabasi_albert, 150; k = 3)
+        sim = run_simulation(spec, CascadeParams(beta = 0.6, factcheck_time = 3, factcheck_reach = 1.0);
+                             seed = 42, strategy = :hub, steps = 4)
+        for h in sim.history
+            h.t < 3 && @test h.believer > 0  # seeds and early growth happened
+        end
+        @test sim.history[4].believer == 0   # t == 3, fact-check lands after forwarding
+    end
+
+    @testset "mechanism: block_top_k blocks the highest-degree seeds at t=0" begin
+        spec = NetworkSpec(:barabasi_albert, 120; k = 3)
+        net = generate_network(spec; seed = 11)
+        seeds = seed_nodes(net, :hub; m = 6, rng = StableRNG(1))
+        blocked = sort(seeds; by = s -> (-net.degree[s], s))[1:2]
+        sim = init_simulation(net.adj, net.degree, CascadeParams(beta = 0.1, block_top_k = 2);
+                              seed = 11, seeds = seeds)
+        for s in blocked
+            @test sim.state[s] == RECOVERED
+        end
+        for s in setdiff(seeds, blocked)
+            @test sim.state[s] == BELIEVER
+        end
+        @test sim.history[1].believer == length(seeds) - 2
+    end
+
+    @testset "mechanism: literacy boost raises sampled skepticism" begin
+        spec = NetworkSpec(:erdos_renyi, 80; p = 0.1)
+        net = generate_network(spec; seed = 77)
+        seeds = [1]
+        plain = init_simulation(net.adj, net.degree, CascadeParams(beta = 0.1, literacy_boost = 0.0); seed = 77, seeds = seeds)
+        boosted = init_simulation(net.adj, net.degree, CascadeParams(beta = 0.1, literacy_boost = 0.4); seed = 77, seeds = seeds)
+        @test boosted.skepticism == clamp.(plain.skepticism .+ 0.4, 0.0, 0.99)
     end
 
     @testset "sweep2 produces a grid with mean reach" begin

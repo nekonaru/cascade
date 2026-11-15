@@ -14,9 +14,6 @@ const BELIEVER    = Int8(1)
 const SKEPTIC     = Int8(2)
 const RECOVERED   = Int8(3)
 
-const STATE_NAMES = Dict(SUSCEPTIBLE => "susceptible", BELIEVER => "believer",
-                         SKEPTIC => "skeptic", RECOVERED => "recovered")
-
 struct CascadeParams
     beta::Float64              # per-neighbor forwarding probability per step
     forget_rate::Float64       # probability a Believer stops spreading per step
@@ -30,8 +27,16 @@ CascadeParams(; beta::Float64 = 0.08, forget_rate::Float64 = 0.05,
                 literacy_boost::Float64 = 0.0,
                 factcheck_time::Union{Int,Nothing} = nothing,
                 factcheck_reach::Float64 = 0.5,
-                block_top_k::Int = 0) =
+                block_top_k::Int = 0) = begin
+    0.0 <= beta || throw(ArgumentError("beta must be >= 0, got $beta"))
+    0.0 <= forget_rate <= 1.0 || throw(ArgumentError("forget_rate must be in [0, 1], got $forget_rate"))
+    literacy_boost >= 0.0 || throw(ArgumentError("literacy_boost must be >= 0 (use 0.0 for no boost), got $literacy_boost"))
+    factcheck_time === nothing || factcheck_time >= 1 ||
+        throw(ArgumentError("factcheck_time must be a step >= 1, got $factcheck_time"))
+    0.0 <= factcheck_reach <= 1.0 || throw(ArgumentError("factcheck_reach must be in [0, 1], got $factcheck_reach"))
+    block_top_k >= 0 || throw(ArgumentError("block_top_k must be >= 0, got $block_top_k"))
     CascadeParams(beta, forget_rate, literacy_boost, factcheck_time, factcheck_reach, block_top_k)
+end
 
 struct StateCounts
     t::Int
@@ -68,11 +73,12 @@ count_states(state::Vector{Int8}, ever_believer::Int, t::Int) = StateCounts(
 )
 
 """
-    init_simulation(adj, degree, communities, params; seed, seeds, strategy) -> Simulation
+    init_simulation(adj, degree, params; seed, seeds, record_trace=false) -> Simulation
 
-Build the initial state: `seeds` lists the 1-based seed node ids. Seed nodes start
-as BELIEVER, unless blocked by `params.block_top_k` (then RECOVERED). Skepticism is
-sampled from Beta(2, 5) and shifted by `params.literacy_boost` (clipped to [0, 0.99]).
+Build the initial state. `seeds` is a non-empty vector of distinct 1-based seed
+node ids (see seed_nodes). Seed nodes start as BELIEVER, unless blocked by
+`params.block_top_k` (then RECOVERED). Skepticism is sampled from Beta(2, 5) and
+shifted by `params.literacy_boost` (clipped to [0, 0.99]).
 """
 function init_simulation(adj::Vector{Vector{Int32}}, degree::Vector{Int32},
                          params::CascadeParams; seed::Integer,
@@ -84,6 +90,7 @@ function init_simulation(adj::Vector{Vector{Int32}}, degree::Vector{Int32},
     nseeds = length(seeds)
     nseeds >= 1 || throw(ArgumentError("at least one seed node is required"))
     all(s -> 1 <= s <= n, seeds) || throw(ArgumentError("seed ids out of range"))
+    length(unique(Int.(seeds))) == nseeds || throw(ArgumentError("duplicate seed ids are not allowed: $seeds"))
 
     # Block the k highest-degree seeds up front (banning the main spreaders).
     blocked = Set{Int}()
