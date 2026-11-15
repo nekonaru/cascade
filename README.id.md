@@ -28,11 +28,13 @@
 - [Kebutuhan](#kebutuhan)
 - [Instalasi](#instalasi)
 - [Penggunaan](#penggunaan)
+- [Contoh output](#contoh-output)
 - [Konfigurasi](#konfigurasi)
 - [Struktur Proyek](#struktur-proyek)
 - [Pengembangan](#pengembangan)
 - [Testing](#testing)
 - [Continuous Integration](#continuous-integration)
+- [Keamanan](#keamanan)
 - [FAQ](#faq)
 - [Penulis](#penulis)
 - [Disclaimer](#disclaimer)
@@ -211,6 +213,21 @@ julia --project=. scripts/run_config.jl
 
 ---
 
+## Contoh output
+
+Skrip yang disertakan menghasilkan gambar-gambar ini (`scripts/make_readme_assets.jl`, output di `assets/`):
+
+| Gambar | Apa yang ditunjukkan |
+|--------|----------------------|
+| [`curve-interval.png`](assets/curve-interval.png) | Rata-rata fraksi yang terjangkau, dengan pita 95% dari 20 replikasi |
+| [`seed-comparison.png`](assets/seed-comparison.png) | Seeding hub menjangkau populasi; seeding acak mati di jaringan yang sama |
+| [`factcheck-comparison.png`](assets/factcheck-comparison.png) | Klarifikasi pada t = 10 menetralkan cascade; pada t = 25 memelintirnya, makin telat makin buruk |
+| [`sweep-heatmap.png`](assets/sweep-heatmap.png) | Rata-rata jangkauan akhir pada grid beta x forget_rate |
+
+Satu run 10.000 node x 200 langkah selesai dalam sekitar 0.02 s di laptop (lihat [`docs/verification.md`](docs/verification.md) untuk angka terukur dan ringkasan test suite).
+
+---
+
 ## Konfigurasi
 
 Semua knob ada di file TOML (lihat [`config/default.toml`](config/default.toml)):
@@ -300,6 +317,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
 | `ci.yml` (test) | Test suite di Julia 1.10 dan Julia 1, Ubuntu dan Windows |
 | `ci.yml` (coverage) | Menegakkan ambang line coverage di `src/` |
 | `ci.yml` (secret-scan) | gitleaks scan seluruh history |
+
+---
+
+## Keamanan
+
+Cascade adalah library simulasi lokal: tidak ada network call saat runtime, tidak ada kredensial, tidak ada telemetri. Dependencies di-pin lewat [`Manifest.toml`](Manifest.toml), setiap push dipindai gitleaks, dan test plus coverage gate berjalan di Julia 1.10 dan Julia 1 di CI.
+
+> [!NOTE]
+> Laporkan kerentanan secara privat lewat GitHub Security Advisories pada repositori ini (lihat [`SECURITY.md`](SECURITY.md)). Jangan buka issue publik untuk laporan keamanan.
 
 ---
 

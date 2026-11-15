@@ -28,11 +28,13 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Example output](#example-output)
 - [Configuration](#configuration)
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Testing](#testing)
 - [Continuous Integration](#continuous-integration)
+- [Security](#security)
 - [FAQ](#faq)
 - [Author](#author)
 - [Disclaimer](#disclaimer)
@@ -211,6 +213,21 @@ julia --project=. scripts/run_config.jl
 
 ---
 
+## Example output
+
+The bundled scripts produce these figures (`scripts/make_readme_assets.jl`, outputs in `assets/`):
+
+| Figure | What it shows |
+|--------|---------------|
+| [`curve-interval.png`](assets/curve-interval.png) | Mean fraction reached, with a 95% band across 20 replications |
+| [`seed-comparison.png`](assets/seed-comparison.png) | Hub seeding reaches the population; random seeding dies out on the same network |
+| [`factcheck-comparison.png`](assets/factcheck-comparison.png) | Fact-check at t = 10 neutralizes the cascade; at t = 25 it bends it, later is worse |
+| [`sweep-heatmap.png`](assets/sweep-heatmap.png) | Mean final reach over the beta x forget_rate grid |
+
+A single 10,000-node x 200-step run completes in about 0.02 s on a laptop (see [`docs/verification.md`](docs/verification.md) for the measured numbers and the test-suite summary).
+
+---
+
 ## Configuration
 
 Every knob lives in a TOML file (see [`config/default.toml`](config/default.toml)):
@@ -300,6 +317,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
 | `ci.yml` (test) | Test suite on Julia 1.10 and Julia 1, Ubuntu and Windows |
 | `ci.yml` (coverage) | Enforces a line-coverage threshold on `src/` |
 | `ci.yml` (secret-scan) | gitleaks scan of the full history |
+
+---
+
+## Security
+
+Cascade is a local simulation library: no network calls at runtime, no credentials, no telemetry. Dependencies are pinned in [`Manifest.toml`](Manifest.toml), every push is scanned by gitleaks, and tests plus a coverage gate run on Julia 1.10 and Julia 1 in CI.
+
+> [!NOTE]
+> Report suspected vulnerabilities privately through GitHub Security Advisories on this repository (see [`SECURITY.md`](SECURITY.md)). Do not open public issues for security reports.
 
 ---
 

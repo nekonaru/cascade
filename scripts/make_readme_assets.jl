@@ -7,14 +7,14 @@ using DataFrames
 using Statistics
 
 assetdir = joinpath(@__DIR__, "..", "assets")
-mkdir(assetdir)
+isdir(assetdir) || mkdir(assetdir)
 println("writing assets to $(abspath(assetdir))")
 
 n = 1000
 spec = NetworkSpec(:barabasi_albert, n; k = 3)
 
 println("1/4 curve with interval band")
-sims = run_replications(spec, CascadeParams(beta = 0.05);
+sims = run_replications(spec, CascadeParams(beta = 0.15);
                         replications = 20, base_seed = 42, steps = 120)
 plot_curve_interval(sims, joinpath(assetdir, "curve-interval.png"))
 
@@ -25,10 +25,9 @@ plot_seed_comparison([("random seeds", rnd), ("hub seeds", hub)],
                      joinpath(assetdir, "seed-comparison.png"))
 
 println("3/4 fact-check timing (none vs t=10 vs t=25)")
-base = CascadeParams(beta = 0.08)
-sim_none = run_simulation(spec, base; seed = 42, steps = 120)
-sim_t10 = run_simulation(spec, CascadeParams(beta = 0.08, factcheck_time = 10, factcheck_reach = 0.7); seed = 42, steps = 120)
-sim_t25 = run_simulation(spec, CascadeParams(beta = 0.08, factcheck_time = 25, factcheck_reach = 0.7); seed = 42, steps = 120)
+sim_none = run_simulation(spec, CascadeParams(beta = 0.15); seed = 42, steps = 120)
+sim_t10 = run_simulation(spec, CascadeParams(beta = 0.15, factcheck_time = 10, factcheck_reach = 0.7); seed = 42, steps = 120)
+sim_t25 = run_simulation(spec, CascadeParams(beta = 0.15, factcheck_time = 25, factcheck_reach = 0.7); seed = 42, steps = 120)
 plot_factcheck_comparison([("no fact-check", sim_none), ("t = 10", sim_t10), ("t = 25", sim_t25)],
                           joinpath(assetdir, "factcheck-comparison.png"))
 
