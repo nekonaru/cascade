@@ -91,7 +91,7 @@ function network_stochastic_block_model(sizes::Vector{Int}, probs::Matrix{Float6
     B = length(sizes)
     size(probs) == (B, B) || throw(ArgumentError("probs must be $B x $B, got $(size(probs))"))
     all(0.0 .<= probs .<= 1.0) || throw(ArgumentError("probs entries must be in [0, 1]"))
-    issymmetric(probs) || throw(ArgumentError("probs must be symmetric (block-to-block connection probabilities)"))
+    probs == probs' || throw(ArgumentError("probs must be symmetric (block-to-block connection probabilities)"))
     # Graphs.jl's stochastic_block_model takes mean neighbor counts, not probabilities:
     # c[a,b] = expected degree of a block-a node into block b = p[a,b] * sizes[b].
     # The diagonal can never exceed sizes[a] - 1, so clamp it to the achievable density

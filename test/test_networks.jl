@@ -17,7 +17,8 @@ using StableRNGs
         spec = NetworkSpec(:watts_strogatz, 60; k = 4, ws_beta = 0.1)
         net = generate_network(spec; seed = 7)
         @test net.n == 60
-        @test all(d -> d == 4, net.degree)  # rewiring preserves each node's degree
+        @test sum(net.degree) == 2 * 120  # k=4 ring lattice: n*k/2 edges, preserved by rewiring
+        @test all(d -> d >= 1, net.degree)
     end
 
     @testset "barabasi-albert" begin

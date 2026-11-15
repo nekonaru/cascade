@@ -123,10 +123,10 @@ function sweep(configs::AbstractVector{CascadeParams}, spec::NetworkSpec;
          factcheck_time = something(p.factcheck_time, -1),
          factcheck_reach = p.factcheck_reach,
          block_top_k = p.block_top_k,
-         final_reach = s.mean[s.metric == "final_reach"],
-         peak_believers = s.mean[s.metric == "peak_believers"],
-         time_to_peak = s.mean[s.metric == "time_to_peak"],
-         initial_growth = s.mean[s.metric == "initial_growth"])
+         final_reach = s.mean[s.metric .== "final_reach"],
+         peak_believers = s.mean[s.metric .== "peak_believers"],
+         time_to_peak = s.mean[s.metric .== "time_to_peak"],
+         initial_growth = s.mean[s.metric .== "initial_growth"])
     end
     return DataFrame(rows)
 end
