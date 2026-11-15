@@ -28,6 +28,7 @@
 - [Kebutuhan](#kebutuhan)
 - [Instalasi](#instalasi)
 - [Penggunaan](#penggunaan)
+- [Contoh output](#contoh-output)
 - [Konfigurasi](#konfigurasi)
 - [Struktur Proyek](#struktur-proyek)
 - [Pengembangan](#pengembangan)
@@ -208,6 +209,21 @@ julia --project=. scripts/run_config.jl
 - Buat ulang gambar README dengan `scripts/make_readme_assets.jl`
 - Animasikan cascade kecil dengan `scripts/animate.jl out.gif`
 - Cek performa dengan `scripts/benchmark.jl` (10.000 node x 200 langkah)
+
+---
+
+## Contoh output
+
+Skrip yang disertakan menghasilkan gambar-gambar ini (`scripts/make_readme_assets.jl`, output di `assets/`):
+
+| Gambar | Apa yang ditunjukkan |
+|--------|----------------------|
+| [`curve-interval.png`](assets/curve-interval.png) | Rata-rata fraksi yang terjangkau, dengan pita 95% dari 20 replikasi |
+| [`seed-comparison.png`](assets/seed-comparison.png) | Seeding hub menjangkau populasi; seeding acak mati di jaringan yang sama |
+| [`factcheck-comparison.png`](assets/factcheck-comparison.png) | Klarifikasi pada t = 10 menetralkan cascade; pada t = 25 memelintirnya, makin telat makin buruk |
+| [`sweep-heatmap.png`](assets/sweep-heatmap.png) | Rata-rata jangkauan akhir pada grid beta x forget_rate |
+
+Satu run 10.000 node x 200 langkah selesai dalam sekitar 0.02 s di laptop (lihat [`docs/verification.md`](docs/verification.md) untuk angka terukur dan ringkasan test suite).
 
 ---
 
