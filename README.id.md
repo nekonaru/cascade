@@ -83,7 +83,7 @@
 | **Replikasi Monte Carlo** | Runner replikasi bawaan dengan rata-rata, std, dan CI 95% (distribusi t) |
 | **Metrik** | Jangkauan akhir, jumlah ever-believer, puncak Believer aktif, waktu menuju puncak, pertumbuhan awal |
 | **Sweep parameter** | Grid sweep dengan heatmap rata-rata jangkauan akhir |
-| **Ekspor** | History dan metrik sebagai CSV, gambar sebagai PNG, animasi sebagai GIF |
+| **Ekspor** | History dan metrik sebagai CSV dan JSON, gambar sebagai PNG, animasi sebagai GIF |
 
 ### Engineering
 

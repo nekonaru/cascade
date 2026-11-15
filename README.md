@@ -83,7 +83,7 @@
 | **Monte Carlo replications** | Built-in replication runner with mean, std and 95% CI (t-distribution) |
 | **Metrics** | Final reach, ever-believer count, peak active Believers, time to peak, initial growth |
 | **Parameter sweeps** | Grid sweeps with a heatmap of mean final reach |
-| **Exports** | History and metrics as CSV, figures as PNG, animations as GIF |
+| **Exports** | History and metrics as CSV and JSON, figures as PNG, animations as GIF |
 
 ### Engineering
 

@@ -72,7 +72,15 @@ using CSV
         mdf = CSV.read(mpath, DataFrame)
         @test nrow(mdf) == 1
         @test hasproperty(mdf, :final_reach)
+
+        jpath = tempname() * ".json"
+        write_metrics_json(sim, jpath)
+        json = read(jpath, String)
+        @test occursin("\"final_reach\"", json)
+        @test occursin("\"peak_believers\"", json)
+        @test occursin("\"time_to_peak\"", json)
         rm(path; force = true)
         rm(mpath; force = true)
+        rm(jpath; force = true)
     end
 end

@@ -7,6 +7,7 @@ using Distributions
 using DataFrames
 using CSV
 using TOML
+using Printf
 using Statistics
 
 export
@@ -23,7 +24,7 @@ export
     run_simulation, run_replications, summarize_runs,
     final_reach, peak_believers, time_to_peak, initial_growth_rate,
     sweep, sweep2,
-    history_dataframe, metrics_dataframe, write_history_csv, write_metrics_csv,
+    history_dataframe, metrics_dataframe, write_history_csv, write_metrics_csv, write_metrics_json,
     # config
     load_config,
     # plots
