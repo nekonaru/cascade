@@ -58,6 +58,35 @@ history_dataframe(sim::Simulation) = DataFrame(
 write_history_csv(sim::Simulation, path::AbstractString) = CSV.write(path, history_dataframe(sim))
 write_metrics_csv(sim::Simulation, path::AbstractString) = CSV.write(path, metrics_dataframe(sim))
 
+# Minimal JSON writer for flat metric dictionaries. No escaping traps: keys are
+# ASCII identifiers and values are numbers or short ASCII strings. Keeps the
+# dependency set exactly as specified (no JSON.jl needed for this).
+_json_escape(s::AbstractString) = replace(s, "\\" => "\\\\", "\"" => "\\\"")
+
+"""
+    write_metrics_json(sim::Simulation, path::AbstractString)
+
+Write the run metrics as a flat JSON object (stdlib only).
+"""
+function write_metrics_json(sim::Simulation, path::AbstractString)
+    m = first(eachrow(metrics_dataframe(sim)))
+    pairs = [
+        "final_reach" => m.final_reach,
+        "peak_believers" => m.peak_believers,
+        "time_to_peak" => m.time_to_peak,
+        "initial_growth" => m.initial_growth,
+        "ever_believer" => m.ever_believer,
+    ]
+    body = join(
+        ["\"$(_json_escape(k))\": " * (v isa Integer ? string(v) : @sprintf("%g", Float64(v))) for (k, v) in pairs],
+        ", ",
+    )
+    open(path, "w") do io
+        write(io, "{ ", body, " }\n")
+    end
+    return path
+end
+
 # ---------- Monte Carlo ----------
 
 function _one_run(spec::NetworkSpec, params::CascadeParams, run_seed::Integer;
