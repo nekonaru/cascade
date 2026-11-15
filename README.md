@@ -34,6 +34,7 @@
 - [Development](#development)
 - [Testing](#testing)
 - [Continuous Integration](#continuous-integration)
+- [Security](#security)
 - [FAQ](#faq)
 - [Author](#author)
 - [Disclaimer](#disclaimer)
@@ -316,6 +317,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
 | `ci.yml` (test) | Test suite on Julia 1.10 and Julia 1, Ubuntu and Windows |
 | `ci.yml` (coverage) | Enforces a line-coverage threshold on `src/` |
 | `ci.yml` (secret-scan) | gitleaks scan of the full history |
+
+---
+
+## Security
+
+Cascade is a local simulation library: no network calls at runtime, no credentials, no telemetry. Dependencies are pinned in [`Manifest.toml`](Manifest.toml), every push is scanned by gitleaks, and tests plus a coverage gate run on Julia 1.10 and Julia 1 in CI.
+
+> [!NOTE]
+> Report suspected vulnerabilities privately through GitHub Security Advisories on this repository (see [`SECURITY.md`](SECURITY.md)). Do not open public issues for security reports.
 
 ---
 

@@ -34,6 +34,7 @@
 - [Pengembangan](#pengembangan)
 - [Testing](#testing)
 - [Continuous Integration](#continuous-integration)
+- [Keamanan](#keamanan)
 - [FAQ](#faq)
 - [Penulis](#penulis)
 - [Disclaimer](#disclaimer)
@@ -316,6 +317,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
 | `ci.yml` (test) | Test suite di Julia 1.10 dan Julia 1, Ubuntu dan Windows |
 | `ci.yml` (coverage) | Menegakkan ambang line coverage di `src/` |
 | `ci.yml` (secret-scan) | gitleaks scan seluruh history |
+
+---
+
+## Keamanan
+
+Cascade adalah library simulasi lokal: tidak ada network call saat runtime, tidak ada kredensial, tidak ada telemetri. Dependencies di-pin lewat [`Manifest.toml`](Manifest.toml), setiap push dipindai gitleaks, dan test plus coverage gate berjalan di Julia 1.10 dan Julia 1 di CI.
+
+> [!NOTE]
+> Laporkan kerentanan secara privat lewat GitHub Security Advisories pada repositori ini (lihat [`SECURITY.md`](SECURITY.md)). Jangan buka issue publik untuk laporan keamanan.
 
 ---
 
