@@ -1,0 +1,21 @@
+# build artifacts
+build/
+dist/
+*.exe
+*.dll
+Manifest.toml.bak
+
+# julia
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+docs/build/
+
+# outputs of the scripts
+cascade-history.csv
+montecarlo-summary.csv
+factcheck-comparison.csv
+cascade.gif
+
+# local secrets
+.env

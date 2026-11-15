@@ -1,0 +1,23 @@
+# Example configuration for Cascade. See docs/model.md for the model rules.
+[network]
+kind = "barabasi_albert"   # erdos_renyi | watts_strogatz | barabasi_albert | sbm
+n = 1000
+k = 3                      # barabasi_albert / watts_strogatz (even k); ws_beta for watts_strogatz
+# p = 0.01                 # erdos_renyi
+# ws_beta = 0.1            # watts_strogatz rewire probability
+# sizes = [500, 500]       # sbm block sizes
+# probs = [[0.02, 0.002], [0.002, 0.02]]
+
+[params]
+beta = 0.08                # per-neighbor forwarding probability per step
+forget_rate = 0.05         # probability a Believer stops spreading per step
+literacy_boost = 0.0       # added to every agent's skepticism before t=0 (clipped to 0.99)
+# factcheck_time = 12      # step at which the fact-check lands (commented out = disabled)
+factcheck_reach = 0.7      # fraction of current Believers converted to Skeptic by the fact-check
+block_top_k = 0            # block the k highest-degree seed nodes up front
+
+[run]
+seed = 42
+strategy = "random"        # random | hub | community
+m_seeds = 1
+steps = 200
