@@ -12,7 +12,7 @@ Rilis publik pertama Cascade.
 - **Intervensi.** Klarifikasi dini atau terlambat dengan jangkauan tetap, literacy boost populasi-wide, dan pemblokiran akun seed hub top-k sejak awal.
 - **Analisis Monte Carlo.** Runner replikasi dengan rata-rata, standar deviasi dan CI 95%, plus metrik jangkauan, puncak aktivitas, waktu menuju puncak dan pertumbuhan awal.
 - **Sweep parameter.** Grid sweep dengan heatmap rata-rata jangkauan akhir.
-- **Visualisasi.** Kurva state, kurva rata-rata dengan pita, perbandingan seed dan klarifikasi, heatmap sweep, ekspor CSV, dan output animasi GIF.
+- **Visualisasi.** Kurva state, kurva rata-rata dengan pita, perbandingan seed dan klarifikasi, heatmap sweep, ekspor CSV dan JSON, dan output animasi GIF.
 - **Konfigurasi TOML.** Run penuh dari `config/default.toml`, dengan skrip untuk single run, studi Monte Carlo, benchmark dan animasi.
 
 ## Peningkatan
