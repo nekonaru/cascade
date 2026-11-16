@@ -11,5 +11,5 @@
 - DEFAULT_BRANCH: main
 - LICENSE: MIT
 - UI_LANGUAGES: English, Bahasa Indonesia (documentation)
-- VERIFICATION: ci-only
+- VERIFICATION: local-and-ci
 - PIPELINE: pr
